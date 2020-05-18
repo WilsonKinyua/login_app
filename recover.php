@@ -13,6 +13,7 @@
 							<div class="text-center">
 								<h2><b>Recover Password</b></h2>
 							</div>
+								<?php recover_password(); ?>
 							<form id="register-form" method="post" role="form" autocomplete="off">
 								<div class="form-group">
 									<label for="email">Email Address</label>
@@ -31,7 +32,7 @@
 
 									</div>
 								</div>
-								<input type="hidden" class="hide" name="token" id="token" value="">
+								<input type="hidden" class="hide" name="token" id="token" value="<?php echo token_generator(); ?>">
 							</form>
 						</div>
 					</div>

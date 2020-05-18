@@ -9,7 +9,8 @@
 	<div class="row">
 		<div class="col-lg-6 col-lg-offset-3">
 
-	
+	<?php display_message(); ?>
+	<?php validate_user_login(); ?>
 								
 		</div>
 	</div>
@@ -53,7 +54,7 @@
 										<div class="row">
 											<div class="col-lg-12">
 												<div class="text-center">
-													<a href="recover.php" tabindex="5" class="forgot-password">Forgot Password?</a>
+													<a href="recover.php?recover_password=<?php echo uniqid(); ?>" tabindex="5" class="forgot-password">Forgot Password?</a>
 												</div>
 											</div>
 										</div>
