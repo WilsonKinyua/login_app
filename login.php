@@ -1,5 +1,15 @@
 <?php include("includes/header.php"); ?>
 
+<?php
+
+	if(logged_in_user()) {
+
+		redirect("admin.php");
+	}
+
+
+?>
+
 <?php include("includes/nav.php"); ?>
 	
 <div class="container">

@@ -1,6 +1,6 @@
 # Login System with Email Verfication and Password Hash
 
-One Paragraph of project description goes here
+This is a login system made with php 
 
 ## Getting Started
 

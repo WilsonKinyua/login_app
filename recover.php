@@ -13,7 +13,10 @@
 							<div class="text-center">
 								<h2><b>Recover Password</b></h2>
 							</div>
+							
 								<?php recover_password(); ?>
+								<?php display_message(); ?>
+								
 							<form id="register-form" method="post" role="form" autocomplete="off">
 								<div class="form-group">
 									<label for="email">Email Address</label>
@@ -23,7 +26,7 @@
 									<div class="row">
 
 										<div class="col-lg-6 col-sm-6 col-xs-6">
-											<input type="submit" name="cancel-submit" id="cencel-submit" tabindex="2" class="form-control btn btn-danger" value="Cancel" />
+											<input type="submit" name="cancel_submit" id="cencel-submit" tabindex="2" class="form-control btn btn-danger" value="Cancel" />
 										</div>
 										<div class="col-lg-6 col-sm-6 col-xs-6">
 											<input type="submit" name="recover-submit" id="recover-submit" tabindex="2" class="form-control btn btn-success" value="Send Password Reset Link" />

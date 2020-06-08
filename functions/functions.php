@@ -321,7 +321,7 @@ function register_user($username, $first_name, $last_name, $email, $password) {
 
         // $password             = password_hash($password,PASSWORD_BCRYPT,array("cost" => 9));
         $password             = md5($password);
-        // $validation_code      = md5($username + microtime());
+        // $validation_code      = md5($username . microtime());
         $validation_code      = md5(uniqid(rand(), true));
 
         $sql    = "INSERT INTO users (first_name, last_name, username, email, password, validation_code, active)";
@@ -333,7 +333,8 @@ function register_user($username, $first_name, $last_name, $email, $password) {
         $message = " Please click the link below to activate your account
                          http://localhost/login/activate.php?email=$email&code=$validation_code
                     ";
-        $headers  = "From: noreply@mywebsite.com";
+        $headers  = "From: noreply@wilsonkinyua.com";
+
         send_mail($email, $subject, $message, $headers);
         return true;
     }
@@ -512,11 +513,11 @@ function recover_password() {
 
         if(email_exists($email)) {
 
-          // $reset_code = md5("email",$email,microtime());
+          // $reset_code = md5($email . microtime());
 
           $reset_code      = md5(uniqid(rand(), true));
 
-          setcookie("temp_reset_code",$reset_code, time() + 60 );
+          setcookie("temp_reset_code",$reset_code, time() + 9000 );
 
           $sql = query("UPDATE users SET validation_code = '". escape($reset_code) ."' WHERE email = '". escape($email) ."' ");
           confirm($sql);
@@ -527,7 +528,7 @@ function recover_password() {
                    Click here to reset your password http://localhost/login/code.php?email=$email&code=$reset_code
 
                       ";
-          $headers  = "From: noreply@codetheguy.com";
+          $headers  = "From: noreply@wilsonkinyua.com";
 
           if(send_mail($email, $subject, $message, $headers)) {
 
@@ -551,4 +552,100 @@ function recover_password() {
       }
     
   }
+
+        if(isset($_POST['cancel_submit'])) {
+
+          redirect("login.php");
+          
+        }
+}
+
+
+/**=================================================VALIDATION OF THE CODE FUNCTION ==================================== */
+
+
+function validate_code() {
+
+    if(isset($_COOKIE['temp_reset_code'])) {
+
+        if(!isset($_GET['email']) && !isset($_GET['code'])) {
+
+          redirect("index.php");
+
+        } elseif (empty($_GET['email']) || empty($_GET['code']) ) {
+
+          redirect("index.php");
+
+        } else {
+
+          if(isset($_POST["code"])) {
+
+           $email           = clean($_GET['email']);
+           $validation_code = clean($_POST["code"]);
+
+           $sql = "SELECT id FROM users WHERE validation_code = '". escape($validation_code) ."' AND email =  '". escape($email) ."'";
+           $result = query($sql);
+
+            if(count_rows($result) == 1) {
+
+                setcookie("temp_reset_code",$validation_code, time() + 3000 );
+                redirect("reset.php?email=$email&code=$validation_code");
+
+            } else {
+
+              set_message("<div class ='alert alert-danger text-center'>Sorry wrong validation code!!!!<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button></div>");
+              redirect("reset.php");
+            }
+
+          }
+        }
+ 
+      
+
+      
+
+    } else {
+      set_message("<div class ='alert alert-danger text-center'>Sorry your validation code has expired!!!!<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button></div>");
+      redirect("recover.php");
+
+    }
+}
+
+
+/**=================================================PASSWORD RESET FUNCTION ==================================== */
+
+
+function password_reset() {
+
+        if(isset($_COOKIE['temp_reset_code'])) {
+
+          if(isset($_GET['email']) && isset($_GET['code'])) {
+
+          if(isset($_SESSION['token']) && isset($_POST['token']) && $_POST['token'] === $_SESSION['token']) {
+
+            if($_POST['password'] === $_POST['confirm_password']) {
+
+              $password = $_POST['password'];
+              $email    = $_GET['email'];
+
+              $password             = md5($password);
+              $sql                  = "UPDATE users SET password = '". escape($password) ."', validation_code = 0 WHERE email = '".escape($email) ."' ";
+              $result               = query($sql);
+
+              set_message("<div class ='alert alert-success text-center'>Password updated successfully. You can now login!!!!<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button></div>");
+              redirect("login.php");
+
+            } 
+
+            } 
+            
+          }
+
+          } else {
+
+            set_message("<div class ='alert alert-danger text-center'>Sorry your time has expired!!!!<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button></div>");
+            redirect("recover.php");
+
+          }
+
 }
